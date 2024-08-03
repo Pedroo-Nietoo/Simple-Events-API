@@ -1,6 +1,6 @@
-# [Simple Event](https://chatgpt.com/share/6f7161e1-7750-4dec-a8b5-07d97de20614)
+# [Simple Events](https://chatgpt.com/share/6f7161e1-7750-4dec-a8b5-07d97de20614)
 
-O Simple Event é uma aplicação de **gestão de participantes em eventos presenciais**.
+O Simple Events é uma aplicação de **gestão de participantes em eventos presenciais**.
 
 A ferramenta permite que o organizador cadastre um evento e abra uma página pública de inscrição.
 
