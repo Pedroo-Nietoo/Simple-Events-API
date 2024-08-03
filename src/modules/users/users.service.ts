@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '@prisma/prisma.service';
 import * as bcypt from 'bcrypt';
 import { User } from './entities/user.entity';
 
@@ -38,7 +38,7 @@ export class UsersService {
   async findAll(): Promise<User[]> {
     const users = await this.prisma.user.findMany();
 
-    if (!users) {
+    if (users.length === 0) {
       throw new NotFoundException('No users found');
     }
 
