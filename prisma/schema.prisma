@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  firstName String    @map("first_name")
+  lastName  String    @map("last_name")
+  email     String    @unique
+  password  String
+  birthDate DateTime  @map("birth_date")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  checkIns  CheckIn[]
+
+  @@map("users")
+}
+
+model Event {
+  id               String    @id @default(uuid())
+  title            String
+  details          String?
+  slug             String    @unique
+  maximumAttendees Int?      @map("maximum_attendees")
+  ageRestricted    Boolean?  @default(false) @map("age_restricted")
+  dateStart        DateTime  @map("date_start")
+  dateEnd          DateTime  @map("date_end")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  checkIns         CheckIn[]
+
+  @@map("events")
+}
+
+model CheckIn {
+  id        String   @id @default(uuid())
+  eventId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+  @@map("check_ins")
+}
