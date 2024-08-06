@@ -1,7 +1,7 @@
 {
-  "name": "simple-events",
-  "version": "0.0.1",
-  "description": "Aplicação de gestão de participantes em eventos presenciais.",
+  "name": "simple-events-api",
+  "version": "1.0.0",
+  "description": "API para aplicação de gestão de participantes em eventos presenciais.",
   "author": "Pedro Henrique Nieto da Silva",
   "private": true,
   "license": "MIT",
