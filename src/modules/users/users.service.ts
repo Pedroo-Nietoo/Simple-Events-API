@@ -21,7 +21,7 @@ export class UsersService {
     });
 
     if (user) {
-      throw new ConflictException('User already exists');
+      throw new ConflictException('E-mail already registered');
     }
 
     const salt = await bcypt.genSaltSync();
@@ -64,6 +64,16 @@ export class UsersService {
 
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+
+    const userWithSameEmail = await this.prisma.user.findUnique({
+      where: {
+        email: updateUserDto.email,
+      },
+    });
+
+    if (userWithSameEmail.email === updateUserDto.email) {
+      throw new ConflictException('E-mail already registered');
     }
 
     if (updateUserDto.password) {

@@ -41,6 +41,7 @@ model CheckIn {
   id        String   @id @default(uuid())
   eventId   String
   userId    String
+  checkedIn Boolean  @default(false) @map("checked_in")
   createdAt DateTime @default(now())
 
   event Event @relation(fields: [eventId], references: [id])
