@@ -1,5 +1,9 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+/**
+ * Sets up Swagger documentation for the provided NestJS application.
+ * @param app - The NestJS application instance to set up Swagger for.
+ */
 export function setupSwagger(app) {
   const config = new DocumentBuilder()
     .setTitle('Simple Events API')

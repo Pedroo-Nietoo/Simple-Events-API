@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Param, UseGuards } from '@nestjs/common';
-
 import {
   ApiOperation,
   ApiCreatedResponse,
@@ -15,11 +14,24 @@ import {
 import { QrCodeService } from '../services/qr-code.service';
 import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
 
+/**
+ * Controller for handling QR-Code-related operations.
+ */
 @ApiTags('Events')
 @Controller('events')
 export class QrCodeController {
   constructor(private readonly qrCodeService: QrCodeService) {}
 
+  /**
+   * Generates a QR Code for event check-in.
+   * @param eventId - The ID of the event.
+   * @param userId - The ID of the user.
+   * @returns The QR Code data URL for check-in.
+   * @throws NotFoundException if the event is not found or if the user is not registered for the event.
+   * @throws BadRequestException if the request is invalid.
+   * @throws UnauthorizedException if the user is not logged in.
+   * @throws InternalServerErrorException for unexpected server errors.
+   */
   @ApiOperation({
     summary: 'Get badge QR code',
     description: 'Generates a QR Code for event check-in',
@@ -51,9 +63,20 @@ export class QrCodeController {
     return this.qrCodeService.getBadge(eventId, userId);
   }
 
+  /**
+   * Checks in a user for an event.
+   * @param eventId - The ID of the event.
+   * @param userId - The ID of the user.
+   * @returns A message indicating the result of the check-in.
+   * @throws NotFoundException if the user is not registered for the event.
+   * @throws ConflictException if the user has already checked in.
+   * @throws BadRequestException if the request is invalid.
+   * @throws UnauthorizedException if the user is not logged in.
+   * @throws InternalServerErrorException for unexpected server errors.
+   */
   @ApiOperation({
-    summary: 'Checks in a user in a event',
-    description: 'Checks in a user in a event on the API',
+    summary: 'Checks in a user to an event',
+    description: 'Checks in a user for a specific event.',
   })
   @ApiCreatedResponse({
     status: 201,

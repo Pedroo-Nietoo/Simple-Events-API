@@ -19,11 +19,20 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 
+/**
+ * Controller for handling authentication operations.
+ */
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /**
+   * Logs in a user and returns a JWT token.
+   * @param body - The login credentials containing `email` and `password`.
+   * @returns The JWT token if credentials are valid.
+   * @throws UnauthorizedException if the credentials are invalid.
+   */
   @ApiOperation({
     summary: 'Logs in a user',
     description: 'Logs in a user on the API',
@@ -47,15 +56,21 @@ export class AuthController {
       properties: { email: { type: 'string' }, password: { type: 'string' } },
     },
   })
-  async login(@Body() body) {
+  async login(@Body() body: { email: string; password: string }) {
     const user = await this.authService.validateUser(body.email, body.password);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid credentials');
     }
     return this.authService.login(user);
   }
 
+  /**
+   * Returns the profile of the currently logged-in user.
+   * @param req - The request object containing the authenticated user.
+   * @returns The profile of the currently logged-in user.
+   * @throws UnauthorizedException if the request is not authenticated.
+   */
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Returns the user profile',

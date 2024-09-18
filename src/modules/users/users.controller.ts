@@ -26,11 +26,19 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 
+/**
+ * Controller for handling user-related operations.
+ */
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  /**
+   * Creates a user.
+   * @param createUserDto - The data required to create a user.
+   * @returns The created user.
+   */
   @ApiOperation({
     summary: 'Creates a user',
     description: 'Creates a user on the API',
@@ -57,6 +65,10 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  /**
+   * Lists all users.
+   * @returns A list of all users.
+   */
   @ApiOperation({
     summary: 'Lists all users',
     description: 'Lists all users on the API',
@@ -85,6 +97,11 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  /**
+   * Lists a specific user by ID.
+   * @param id - The ID of the user to retrieve.
+   * @returns The user with the specified ID.
+   */
   @ApiOperation({
     summary: 'Lists a specific user',
     description: 'Lists a user on the API',
@@ -113,6 +130,12 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  /**
+   * Updates a user by ID.
+   * @param id - The ID of the user to update.
+   * @param updateUserDto - The data to update the user with.
+   * @returns The updated user.
+   */
   @ApiOperation({
     summary: 'Updates a user',
     description: 'Updates a user on the API',
@@ -145,6 +168,11 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  /**
+   * Deletes a user by ID.
+   * @param id - The ID of the user to delete.
+   * @returns A success message.
+   */
   @ApiOperation({
     summary: 'Deletes a user',
     description: 'Deletes a user on the API',

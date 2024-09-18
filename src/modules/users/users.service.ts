@@ -9,10 +9,24 @@ import { PrismaService } from '@prisma/prisma.service';
 import * as bcypt from 'bcrypt';
 import { User } from './entities/user.entity';
 
+/**
+ * Service dealing with user-related operations.
+ */
 @Injectable()
 export class UsersService {
+  /**
+   * Constructs an instance of the UsersService.
+   *
+   * @param {PrismaService} prisma - The Prisma service used for database operations.
+   */
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Creates a new user.
+   * @param createUserDto - Data Transfer Object containing user creation details.
+   * @returns The created user.
+   * @throws ConflictException if the email is already registered.
+   */
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: {
@@ -35,6 +49,11 @@ export class UsersService {
     });
   }
 
+  /**
+   * Retrieves all users.
+   * @returns An array of users.
+   * @throws NotFoundException if no users are found.
+   */
   async findAll(): Promise<User[]> {
     const users = await this.prisma.user.findMany();
 
@@ -45,6 +64,12 @@ export class UsersService {
     return users;
   }
 
+  /**
+   * Retrieves a user by their ID.
+   * @param id - The ID of the user to retrieve.
+   * @returns The user with the specified ID.
+   * @throws NotFoundException if the user is not found.
+   */
   async findOne(id: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { id },
@@ -57,6 +82,12 @@ export class UsersService {
     return user;
   }
 
+  /**
+   * Retrieves a user by their email.
+   * @param email - The email of the user to retrieve.
+   * @returns The user with the specified email.
+   * @throws NotFoundException if the user is not found.
+   */
   async findOneByEmail(email: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: {
@@ -71,6 +102,14 @@ export class UsersService {
     return user;
   }
 
+  /**
+   * Updates a user's details.
+   * @param id - The ID of the user to update.
+   * @param updateUserDto - Data Transfer Object containing user update details.
+   * @returns The updated user.
+   * @throws NotFoundException if the user is not found.
+   * @throws ConflictException if the email is already registered.
+   */
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { id },
@@ -101,6 +140,12 @@ export class UsersService {
     });
   }
 
+  /**
+   * Deletes a user by their ID.
+   * @param id - The ID of the user to delete.
+   * @returns An object containing a success message and status code.
+   * @throws NotFoundException if the user is not found.
+   */
   async remove(id: string): Promise<object> {
     const user = await this.prisma.user.findUnique({
       where: { id },

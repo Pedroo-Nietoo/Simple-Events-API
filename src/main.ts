@@ -7,6 +7,9 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+/**
+ * Initializes and starts the NestJS application.
+ */
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 

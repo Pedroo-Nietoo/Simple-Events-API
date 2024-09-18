@@ -1,74 +1,103 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateEventDto } from './create-event.dto';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
-  IsNotEmpty,
   IsOptional,
   IsNumber,
   IsBoolean,
   IsDate,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 
+/**
+ * Data Transfer Object for updating an event.
+ * Extends the CreateEventDto to allow partial updates.
+ */
 export class UpdateEventDto extends PartialType(CreateEventDto) {
+  /**
+   * The title of the event.
+   * @example 'Updated Event Title'
+   */
   @ApiProperty({
     description: 'The title of the event',
     type: 'string',
-    required: true,
-    example: 'My Event',
+    required: false,
+    example: 'Updated Event Title',
   })
   @IsString()
-  @IsNotEmpty()
-  title: string;
+  @IsOptional()
+  title?: string;
 
+  /**
+   * The description of the event.
+   * @example 'Updated description of my event'
+   */
   @ApiProperty({
     description: 'The description of the event',
     type: 'string',
     required: false,
-    example: 'A description of my event',
+    example: 'Updated description of my event',
   })
   @IsString()
   @IsOptional()
   details?: string;
 
+  /**
+   * The maximum number of attendees for the event.
+   * @example 150
+   */
   @ApiProperty({
     description: 'The maximum number of attendees for the event',
     type: 'number',
     required: false,
-    example: 100,
+    example: 150,
   })
   @IsNumber()
   @IsOptional()
   maximumAttendees?: number;
 
+  /**
+   * Indicates if the event requires a minimum age of 18 years old to attend.
+   * @example false
+   */
   @ApiProperty({
     description:
       'If the event requires a minimum age of 18 years old to attend the event',
     type: 'boolean',
     required: false,
-    example: true,
+    example: false,
   })
   @IsBoolean()
   @IsOptional()
   ageRestricted?: boolean;
 
+  /**
+   * The start date and time of the event in ISO 8601 format.
+   * @example '2024-08-06T00:00:00.000Z'
+   */
   @ApiProperty({
     description: 'The start date of the event',
-    type: 'Date',
-    required: true,
-    example: '2024-08-06',
+    type: 'string',
+    format: 'date-time',
+    required: false,
+    example: '2024-08-06T00:00:00.000Z',
   })
   @IsDate()
-  @IsNotEmpty()
-  dateStart: Date;
+  @IsOptional()
+  dateStart?: Date;
 
+  /**
+   * The end date and time of the event in ISO 8601 format.
+   * @example '2024-08-07T00:00:00.000Z'
+   */
   @ApiProperty({
     description: 'The end date of the event',
-    type: 'Date',
-    required: true,
-    example: '2024-08-07',
+    type: 'string',
+    format: 'date-time',
+    required: false,
+    example: '2024-08-07T00:00:00.000Z',
   })
   @IsDate()
-  @IsNotEmpty()
-  dateEnd: Date;
+  @IsOptional()
+  dateEnd?: Date;
 }

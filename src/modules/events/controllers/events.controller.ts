@@ -26,14 +26,26 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
 
+/**
+ * Controller for handling event-related operations.
+ */
 @ApiTags('Events')
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
+  /**
+   * Creates a new event.
+   * @param createEventDto - The data required to create an event.
+   * @returns The created event.
+   * @throws ConflictException if an event with the same title already exists.
+   * @throws BadRequestException if the request data is invalid.
+   * @throws UnauthorizedException if the user is not logged in.
+   * @throws InternalServerErrorException for unexpected server errors.
+   */
   @ApiOperation({
-    summary: 'Creates a event',
-    description: 'Creates a event on the API',
+    summary: 'Creates an event',
+    description: 'Creates a new event in the API.',
   })
   @ApiCreatedResponse({
     status: 201,
@@ -62,9 +74,17 @@ export class EventsController {
     return this.eventsService.create(createEventDto);
   }
 
+  /**
+   * Lists all events.
+   * @returns An array of events.
+   * @throws NotFoundException if no events are found.
+   * @throws BadRequestException if the request is invalid.
+   * @throws UnauthorizedException if the user is not logged in.
+   * @throws InternalServerErrorException for unexpected server errors.
+   */
   @ApiOperation({
     summary: 'Lists all events',
-    description: 'Lists all events on the API',
+    description: 'Retrieves a list of all events from the API.',
   })
   @ApiOkResponse({ status: 200, description: 'Events listed successfully' })
   @ApiBadRequestResponse({
@@ -90,9 +110,18 @@ export class EventsController {
     return this.eventsService.findAll();
   }
 
+  /**
+   * Retrieves a specific event by ID.
+   * @param id - The ID of the event to retrieve.
+   * @returns The event with the specified ID.
+   * @throws NotFoundException if the event is not found.
+   * @throws BadRequestException if the request is invalid.
+   * @throws UnauthorizedException if the user is not logged in.
+   * @throws InternalServerErrorException for unexpected server errors.
+   */
   @ApiOperation({
     summary: 'Lists a specific event',
-    description: 'Lists a event on the API',
+    description: 'Retrieves details of a specific event from the API.',
   })
   @ApiOkResponse({ status: 200, description: 'Event listed successfully' })
   @ApiBadRequestResponse({
@@ -118,9 +147,20 @@ export class EventsController {
     return this.eventsService.findOne(id);
   }
 
+  /**
+   * Updates an existing event.
+   * @param id - The ID of the event to update.
+   * @param updateEventDto - The data to update the event with.
+   * @returns The updated event.
+   * @throws NotFoundException if the event is not found.
+   * @throws ConflictException if an event with the same title already exists.
+   * @throws BadRequestException if the request data is invalid.
+   * @throws UnauthorizedException if the user is not logged in.
+   * @throws InternalServerErrorException for unexpected server errors.
+   */
   @ApiOperation({
-    summary: 'Updates a event',
-    description: 'Updates a event on the API',
+    summary: 'Updates an event',
+    description: 'Updates an existing event in the API.',
   })
   @ApiOkResponse({ status: 200, description: 'Event updated successfully' })
   @ApiBadRequestResponse({
@@ -150,9 +190,18 @@ export class EventsController {
     return this.eventsService.update(id, updateEventDto);
   }
 
+  /**
+   * Deletes an event.
+   * @param id - The ID of the event to delete.
+   * @returns A message indicating the result of the delete operation.
+   * @throws NotFoundException if the event is not found.
+   * @throws BadRequestException if the request is invalid.
+   * @throws UnauthorizedException if the user is not logged in.
+   * @throws InternalServerErrorException for unexpected server errors.
+   */
   @ApiOperation({
-    summary: 'Deletes a event',
-    description: 'Deletes a event on the API',
+    summary: 'Deletes an event',
+    description: 'Deletes an event from the API.',
   })
   @ApiNoContentResponse({
     status: 204,
@@ -181,9 +230,20 @@ export class EventsController {
     return this.eventsService.remove(id);
   }
 
+  /**
+   * Registers a user for an event.
+   * @param eventId - The ID of the event.
+   * @param userId - The ID of the user.
+   * @returns A message indicating the result of the registration.
+   * @throws NotFoundException if the event is not found.
+   * @throws ConflictException if the user is already registered or if the event is full.
+   * @throws BadRequestException if the request is invalid.
+   * @throws UnauthorizedException if the user is not logged in.
+   * @throws InternalServerErrorException for unexpected server errors.
+   */
   @ApiOperation({
-    summary: 'Registers a user in a event',
-    description: 'egisters a user in a event on the API',
+    summary: 'Registers a user in an event',
+    description: 'Registers a user for a specific event in the API.',
   })
   @ApiCreatedResponse({
     status: 201,
