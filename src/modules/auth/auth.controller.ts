@@ -49,6 +49,7 @@ export class AuthController {
   })
   async login(@Body() body) {
     const user = await this.authService.validateUser(body.email, body.password);
+
     if (!user) {
       throw new UnauthorizedException();
     }

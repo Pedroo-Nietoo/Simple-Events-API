@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { EventsService } from '../services/events.service';
 import { CreateEventDto } from '../dto/create-event.dto';
@@ -20,7 +21,10 @@ import {
   ApiOkResponse,
   ApiNoContentResponse,
   ApiTags,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
 
 @ApiTags('Events')
 @Controller('events')
@@ -39,6 +43,10 @@ export class EventsController {
     status: 400,
     description: 'Bad request',
   })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'User not logged in',
+  })
   @ApiConflictResponse({
     status: 409,
     description: 'Title already registered',
@@ -47,6 +55,8 @@ export class EventsController {
     status: 500,
     description: 'Internal server error',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createEventDto: CreateEventDto) {
     return this.eventsService.create(createEventDto);
@@ -61,6 +71,10 @@ export class EventsController {
     status: 400,
     description: 'Bad request',
   })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'User not logged in',
+  })
   @ApiNotFoundResponse({
     status: 404,
     description: 'No events found',
@@ -69,6 +83,8 @@ export class EventsController {
     status: 500,
     description: 'Internal server error',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.eventsService.findAll();
@@ -83,6 +99,10 @@ export class EventsController {
     status: 400,
     description: 'Bad request',
   })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'User not logged in',
+  })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found',
@@ -91,6 +111,8 @@ export class EventsController {
     status: 500,
     description: 'Internal server error',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.eventsService.findOne(id);
@@ -105,6 +127,10 @@ export class EventsController {
     status: 400,
     description: 'Bad request',
   })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'User not logged in',
+  })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found',
@@ -117,6 +143,8 @@ export class EventsController {
     status: 500,
     description: 'Internal server error',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
     return this.eventsService.update(id, updateEventDto);
@@ -134,6 +162,10 @@ export class EventsController {
     status: 400,
     description: 'Bad request',
   })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'User not logged in',
+  })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found',
@@ -142,6 +174,8 @@ export class EventsController {
     status: 500,
     description: 'Internal server error',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.eventsService.remove(id);
@@ -159,6 +193,10 @@ export class EventsController {
     status: 400,
     description: 'Bad request',
   })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'User not logged in',
+  })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found',
@@ -172,6 +210,8 @@ export class EventsController {
     status: 500,
     description: 'Internal server error',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post(':eventId/attendee/:userId/register')
   registerUserInEvent(
     @Param('eventId') eventId: string,

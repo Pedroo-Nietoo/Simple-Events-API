@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param } from '@nestjs/common';
+import { Controller, Get, Post, Param, UseGuards } from '@nestjs/common';
 
 import {
   ApiOperation,
@@ -9,8 +9,11 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { QrCodeService } from '../services/qr-code.service';
+import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
 
 @ApiTags('Events')
 @Controller('events')
@@ -29,6 +32,10 @@ export class QrCodeController {
     status: 400,
     description: 'Bad request',
   })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'User not logged in',
+  })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found / User not registered in this event',
@@ -37,6 +44,8 @@ export class QrCodeController {
     status: 500,
     description: 'Internal server error',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get(':eventId/attendee/:userId/badge')
   getBadge(@Param('eventId') eventId: string, @Param('userId') userId: string) {
     return this.qrCodeService.getBadge(eventId, userId);
@@ -54,6 +63,10 @@ export class QrCodeController {
     status: 400,
     description: 'Bad request',
   })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'User not logged in',
+  })
   @ApiNotFoundResponse({
     status: 404,
     description: 'User is not registered in this event',
@@ -66,6 +79,8 @@ export class QrCodeController {
     status: 500,
     description: 'Internal server error',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post(':eventId/attendee/:userId/check-in')
   checkIn(@Param('eventId') eventId: string, @Param('userId') userId: string) {
     return this.qrCodeService.checkIn(eventId, userId);
