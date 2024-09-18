@@ -20,7 +20,8 @@
     "paths": {
       "@/*": ["src/*"],
       "@modules/*": ["src/modules/*"],
-      "@prisma/*": ["src/prisma/*"],
+      "@middlewares/*": ["src/common/middlewares/*"],
+      "@prisma/*": ["src/core/prisma/*"],
       "@utils/*": ["src/utils/*"]
     }
   }

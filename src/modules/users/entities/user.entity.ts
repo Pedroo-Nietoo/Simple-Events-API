@@ -5,9 +5,13 @@ import {
   IsEmail,
   IsStrongPassword,
   IsDate,
+  IsOptional,
 } from 'class-validator';
 
 export class User implements Prisma.UserCreateInput {
+  @IsOptional()
+  id: string;
+
   @IsString()
   @IsNotEmpty()
   firstName: string;
