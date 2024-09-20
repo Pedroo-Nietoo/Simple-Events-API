@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -46,6 +47,15 @@ export class QrCodeService {
 
     if (!existingCheckIn) {
       throw new NotFoundException('User is not registered in this event');
+    }
+
+    const currentTime = new Date();
+    const eventStartTime = new Date(event.startTime);
+
+    if (eventStartTime.getTime() - currentTime.getTime() <= 60 * 60 * 1000) {
+      throw new BadRequestException(
+        'Cannot generate QR Code. Only generation with 1 hour or less remaining will be allowed',
+      );
     }
 
     const url = `http://localhost:3000/events/${eventId}/attendee/${userId}/check-in`;

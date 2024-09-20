@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
+}
+
 model User {
   id        String    @id @default(uuid())
   firstName String    @map("first_name")
@@ -29,7 +33,7 @@ model Event {
   maximumAttendees Int?      @map("maximum_attendees")
   ageRestricted    Boolean?  @default(false) @map("age_restricted")
   dateStart        DateTime  @map("date_start") @db.Date
-  timeStart        DateTime  @map("time_start") @db.Time
+  startTime        DateTime  @map("time_start") @db.Time
   dateEnd          DateTime  @map("date_end") @db.Date
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt

@@ -84,7 +84,8 @@ export class QrCodeController {
   })
   @ApiBadRequestResponse({
     status: 400,
-    description: 'Bad request',
+    description:
+      'Cannot generate QR Code. Only generation with 1 hour or less remaining will be allowed',
   })
   @ApiUnauthorizedResponse({
     status: 401,

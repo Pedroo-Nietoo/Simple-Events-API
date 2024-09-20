@@ -8,6 +8,8 @@ import { UpdateEventDto } from '../dto/update-event.dto';
 import { generateSlug } from '@utils/generate-slug.util';
 import { Event } from '../entities/event.entity';
 import { PrismaService } from '@prisma/prisma.service';
+import * as sgMail from '@sendgrid/mail';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Service class for managing events.
@@ -19,7 +21,10 @@ export class EventsService {
    *
    * @param {PrismaService} prisma - The Prisma service used for database operations.
    */
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private configService: ConfigService,
+  ) {}
 
   /**
    * Creates a new event.
@@ -46,6 +51,7 @@ export class EventsService {
         slug,
         dateStart: new Date(createEventDto.dateStart),
         dateEnd: new Date(createEventDto.dateEnd),
+        startTime: new Date(createEventDto.startTime),
       },
     });
   }
@@ -177,6 +183,8 @@ export class EventsService {
     userId: string,
   ): Promise<{ message: string }> {
     return this.prisma.$transaction(async (prisma) => {
+      let user;
+
       const event = await prisma.event.findUnique({
         where: { id: eventId },
         select: { maximumAttendees: true, ageRestricted: true },
@@ -195,9 +203,8 @@ export class EventsService {
       }
 
       if (event.ageRestricted) {
-        const user = await prisma.user.findUnique({
+        user = await prisma.user.findUnique({
           where: { id: userId },
-          select: { birthDate: true },
         });
 
         if (!user) {
@@ -229,6 +236,27 @@ export class EventsService {
           userId,
         },
       });
+
+      try {
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+        const msg = {
+          to: user?.email,
+          from: 'pedronieto.2005@gmail.com',
+          templateId: 'd-d09f68831f8c4c688a5a3dbb19e7fca0',
+          dynamic_template_data: {
+            title: 'NLW Unite',
+          },
+          // subject: 'Event Registration Confirmation',
+          // text: `You have successfully registered for the event with ID: ${eventId}`,
+          // html: `<strong>You have successfully registered for the event with ID: ${eventId}</strong>`,
+        };
+
+        await sgMail.send(msg);
+      } catch (error) {
+        console.error('Error sending email:', error);
+        throw new Error('Failed to send registration confirmation email');
+      }
 
       return { message: 'Registration successful' };
     });
