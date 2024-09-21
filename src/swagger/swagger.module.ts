@@ -1,5 +1,5 @@
+import { setupSwagger } from '@/config/swagger.config';
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { setupSwagger } from '../../config/swagger.config';
 
 @Module({})
 export class SwaggerModule implements NestModule {

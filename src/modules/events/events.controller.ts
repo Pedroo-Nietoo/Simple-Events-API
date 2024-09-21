@@ -8,9 +8,7 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { EventsService } from '../services/events.service';
-import { CreateEventDto } from '../dto/create-event.dto';
-import { UpdateEventDto } from '../dto/update-event.dto';
+
 import {
   ApiOperation,
   ApiCreatedResponse,
@@ -25,6 +23,9 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
+import { EventsService } from './events.service';
+import { UpdateEventDto } from './dto/update-event.dto';
+import { CreateEventDto } from './dto/create-event.dto';
 
 /**
  * Controller for handling event-related operations.

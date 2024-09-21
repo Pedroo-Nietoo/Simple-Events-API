@@ -3,13 +3,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateEventDto } from '../dto/create-event.dto';
-import { UpdateEventDto } from '../dto/update-event.dto';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 import { generateSlug } from '@utils/generate-slug.util';
-import { Event } from '../entities/event.entity';
+import { Event } from './entities/event.entity';
 import { PrismaService } from '@prisma/prisma.service';
-import * as sgMail from '@sendgrid/mail';
-import { ConfigService } from '@nestjs/config';
+import { MailService } from '@/common/mail/mail.service';
 
 /**
  * Service class for managing events.
@@ -23,7 +22,7 @@ export class EventsService {
    */
   constructor(
     private prisma: PrismaService,
-    private configService: ConfigService,
+    private mailService: MailService,
   ) {}
 
   /**
@@ -183,11 +182,12 @@ export class EventsService {
     userId: string,
   ): Promise<{ message: string }> {
     return this.prisma.$transaction(async (prisma) => {
-      let user;
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
 
       const event = await prisma.event.findUnique({
         where: { id: eventId },
-        select: { maximumAttendees: true, ageRestricted: true },
       });
 
       if (!event) {
@@ -198,15 +198,21 @@ export class EventsService {
         where: { eventId },
       });
 
+      const today = new Date();
+      const eventEndDate = new Date(event.dateEnd);
+
+      if (
+        today.toDateString() !== eventEndDate.toDateString() &&
+        today > eventEndDate
+      ) {
+        throw new ConflictException('Cannot register: Event has already ended');
+      }
+
       if (event.maximumAttendees && checkIns >= event.maximumAttendees) {
         throw new ConflictException('Event is full');
       }
 
       if (event.ageRestricted) {
-        user = await prisma.user.findUnique({
-          where: { id: userId },
-        });
-
         if (!user) {
           throw new NotFoundException('User not found');
         }
@@ -237,26 +243,7 @@ export class EventsService {
         },
       });
 
-      try {
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-        const msg = {
-          to: user?.email,
-          from: 'pedronieto.2005@gmail.com',
-          templateId: 'd-d09f68831f8c4c688a5a3dbb19e7fca0',
-          dynamic_template_data: {
-            title: 'NLW Unite',
-          },
-          // subject: 'Event Registration Confirmation',
-          // text: `You have successfully registered for the event with ID: ${eventId}`,
-          // html: `<strong>You have successfully registered for the event with ID: ${eventId}</strong>`,
-        };
-
-        await sgMail.send(msg);
-      } catch (error) {
-        console.error('Error sending email:', error);
-        throw new Error('Failed to send registration confirmation email');
-      }
+      await this.mailService.sendRegistrationEmail(user, event);
 
       return { message: 'Registration successful' };
     });

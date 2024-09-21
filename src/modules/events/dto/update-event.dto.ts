@@ -111,7 +111,7 @@ export class UpdateEventDto extends PartialType(CreateEventDto) {
     type: 'string',
     format: 'date-time',
     required: true,
-    example: '15:30:00',
+    example: '2024-08-07T15:30:00.000Z',
   })
   @IsDate()
   @IsNotEmpty()

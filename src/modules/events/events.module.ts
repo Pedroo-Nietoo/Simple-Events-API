@@ -1,12 +1,13 @@
+import { MailService } from '@/common/mail/mail.service';
 import { Module } from '@nestjs/common';
-import { EventsService } from './services/events.service';
-import { EventsController } from './controllers/events.controller';
+import { EventsService } from './events.service';
 import { PrismaService } from '@prisma/prisma.service';
-import { QrCodeController } from './controllers/qr-code.controller';
-import { QrCodeService } from './services/qr-code.service';
+import { QrCodeController } from '../../common/qr-code/qr-code.controller';
+import { QrCodeService } from '../../common/qr-code/qr-code.service';
+import { EventsController } from './events.controller';
 
 @Module({
   controllers: [EventsController, QrCodeController],
-  providers: [EventsService, QrCodeService, PrismaService],
+  providers: [EventsService, QrCodeService, MailService, PrismaService],
 })
 export class EventsModule {}

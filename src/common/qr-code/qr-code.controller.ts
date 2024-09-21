@@ -11,7 +11,7 @@ import {
   ApiBearerAuth,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { QrCodeService } from '../services/qr-code.service';
+import { QrCodeService } from './qr-code.service';
 import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
 
 /**

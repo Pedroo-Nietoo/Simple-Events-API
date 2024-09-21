@@ -54,8 +54,19 @@ export class UsersService {
    * @returns An array of users.
    * @throws NotFoundException if no users are found.
    */
-  async findAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
+  async findAll(): Promise<User[] | object[]> {
+    const users = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        birthDate: true,
+        createdAt: true,
+        updatedAt: true,
+        checkIns: true,
+      },
+    });
 
     if (users.length === 0) {
       throw new NotFoundException('No users found');
@@ -70,9 +81,19 @@ export class UsersService {
    * @returns The user with the specified ID.
    * @throws NotFoundException if the user is not found.
    */
-  async findOne(id: string): Promise<User> {
+  async findOne(id: string): Promise<User | object> {
     const user = await this.prisma.user.findUnique({
       where: { id },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        birthDate: true,
+        createdAt: true,
+        updatedAt: true,
+        checkIns: true,
+      },
     });
 
     if (!user) {

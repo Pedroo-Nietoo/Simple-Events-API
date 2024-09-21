@@ -50,9 +50,17 @@ export class QrCodeService {
     }
 
     const currentTime = new Date();
+    currentTime.setHours(currentTime.getHours() - 3);
+
     const eventStartTime = new Date(event.startTime);
 
-    if (eventStartTime.getTime() - currentTime.getTime() <= 60 * 60 * 1000) {
+    const timeDifference = eventStartTime.getTime() - currentTime.getTime();
+    const oneHourInMilliseconds = 60 * 60 * 1000;
+
+    if (
+      currentTime.toDateString() !== eventStartTime.toDateString() ||
+      timeDifference > oneHourInMilliseconds
+    ) {
       throw new BadRequestException(
         'Cannot generate QR Code. Only generation with 1 hour or less remaining will be allowed',
       );
