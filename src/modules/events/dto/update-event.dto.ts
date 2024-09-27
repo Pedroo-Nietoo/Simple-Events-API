@@ -7,7 +7,6 @@ import {
   IsNumber,
   IsBoolean,
   IsDate,
-  IsNotEmpty,
 } from 'class-validator';
 
 /**
@@ -101,19 +100,4 @@ export class UpdateEventDto extends PartialType(CreateEventDto) {
   @IsDate()
   @IsOptional()
   dateEnd?: Date;
-
-  /**
-   * The start time of the event.
-   * @example '15:30:00'
-   */
-  @ApiProperty({
-    description: 'The start time of the event',
-    type: 'string',
-    format: 'date-time',
-    required: true,
-    example: '2024-08-07T15:30:00.000Z',
-  })
-  @IsDate()
-  @IsNotEmpty()
-  startTime: Date;
 }

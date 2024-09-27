@@ -28,6 +28,7 @@
     "docs:generate": "npx compodoc -p tsconfig.json -n 'Simple Events documentation'"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.0.3",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.3",
     "@nestjs/core": "^10.0.0",
@@ -35,7 +36,11 @@
     "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/schedule": "^4.1.1",
     "@nestjs/swagger": "^7.4.0",
+    "@nestjs/terminus": "^10.2.3",
+    "@nestjs/throttler": "^6.2.1",
+    "@nestjs/typeorm": "^10.0.2",
     "@prisma/client": "^5.17.0",
     "@sendgrid/mail": "^8.1.3",
     "bcrypt": "^5.1.1",
@@ -47,7 +52,8 @@
     "prisma": "^5.17.0",
     "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

@@ -11,14 +11,13 @@ export class MailService {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
       const dateStart = new Date(event.dateStart);
-      const startTime = new Date(event.startTime);
 
       const combinedDate = new Date(
         dateStart.getUTCFullYear(),
         dateStart.getUTCMonth(),
         dateStart.getUTCDate(),
-        startTime.getUTCHours(),
-        startTime.getUTCMinutes(),
+        dateStart.getUTCHours(),
+        dateStart.getUTCMinutes(),
       );
 
       const day = String(combinedDate.getDate()).padStart(2, '0');

@@ -9,6 +9,7 @@ import { generateSlug } from '@utils/generate-slug.util';
 import { Event } from './entities/event.entity';
 import { PrismaService } from '@prisma/prisma.service';
 import { MailService } from '@/common/mail/mail.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 /**
  * Service class for managing events.
@@ -50,7 +51,6 @@ export class EventsService {
         slug,
         dateStart: new Date(createEventDto.dateStart),
         dateEnd: new Date(createEventDto.dateEnd),
-        startTime: new Date(createEventDto.startTime),
       },
     });
   }
@@ -71,6 +71,7 @@ export class EventsService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                birthDate: true,
               },
             },
           },
@@ -91,14 +92,21 @@ export class EventsService {
    * @returns The event with the given ID.
    * @throws NotFoundException if the event is not found.
    */
-  async findOne(id: string): Promise<Event> {
+  async findOne(slug: string): Promise<Event> {
     const event = await this.prisma.event.findUnique({
-      where: { id },
+      where: { slug },
       include: {
         checkIns: {
           select: {
-            user: true,
-            userId: true,
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                birthDate: true,
+              },
+            },
           },
         },
       },
@@ -119,29 +127,29 @@ export class EventsService {
    * @throws NotFoundException if the event is not found.
    * @throws ConflictException if an event with the same title already exists.
    */
-  async update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
+  async update(slug: string, updateEventDto: UpdateEventDto): Promise<Event> {
     const event = await this.prisma.event.findUnique({
-      where: { id },
+      where: { slug },
     });
 
     if (!event) {
       throw new NotFoundException('Event not found');
     }
 
-    const slug = generateSlug(updateEventDto.title);
+    const eventSlug = generateSlug(updateEventDto.title);
 
     const eventWithSlug = await this.prisma.event.findUnique({
-      where: { slug },
+      where: { slug: eventSlug },
     });
 
-    if (eventWithSlug && eventWithSlug.id !== id) {
+    if (eventWithSlug && eventWithSlug.slug !== slug) {
       throw new ConflictException(
         `Event with title '${updateEventDto.title}' already exists`,
       );
     }
 
     return await this.prisma.event.update({
-      where: { id },
+      where: { slug },
       data: {
         ...updateEventDto,
         dateStart: new Date(updateEventDto.dateStart),
@@ -155,17 +163,22 @@ export class EventsService {
    * @param id - The ID of the event to delete.
    * @throws NotFoundException if the event is not found.
    */
-  async remove(id: string): Promise<void> {
+  async remove(slug: string): Promise<void> {
     const event = await this.prisma.event.findUnique({
-      where: { id },
+      where: { slug },
+      include: { checkIns: true },
     });
 
     if (!event) {
       throw new NotFoundException('Event not found');
     }
 
+    await this.prisma.checkIn.deleteMany({
+      where: { eventId: event.id },
+    });
+
     await this.prisma.event.delete({
-      where: { id },
+      where: { slug },
     });
   }
 
@@ -178,7 +191,7 @@ export class EventsService {
    * @throws ConflictException if the event is full or the user is already registered.
    */
   async registerUserInEvent(
-    eventId: string,
+    eventSlug: string,
     userId: string,
   ): Promise<{ message: string }> {
     return this.prisma.$transaction(async (prisma) => {
@@ -187,7 +200,7 @@ export class EventsService {
       });
 
       const event = await prisma.event.findUnique({
-        where: { id: eventId },
+        where: { slug: eventSlug },
       });
 
       if (!event) {
@@ -195,16 +208,22 @@ export class EventsService {
       }
 
       const checkIns = await prisma.checkIn.count({
-        where: { eventId },
+        where: { eventId: event.id },
       });
 
       const today = new Date();
-      const eventEndDate = new Date(event.dateEnd);
+      const todayDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+      );
+      const eventEndDate = new Date(
+        event.dateEnd.getFullYear(),
+        event.dateEnd.getMonth(),
+        event.dateEnd.getUTCDate(),
+      );
 
-      if (
-        today.toDateString() !== eventEndDate.toDateString() &&
-        today > eventEndDate
-      ) {
+      if (todayDate > eventEndDate) {
         throw new ConflictException('Cannot register: Event has already ended');
       }
 
@@ -226,7 +245,7 @@ export class EventsService {
       const existingCheckIn = await prisma.checkIn.findUnique({
         where: {
           eventId_userId: {
-            eventId,
+            eventId: event.id,
             userId,
           },
         },
@@ -238,14 +257,40 @@ export class EventsService {
 
       await prisma.checkIn.create({
         data: {
-          eventId,
+          eventId: event.id,
           userId,
         },
       });
 
-      await this.mailService.sendRegistrationEmail(user, event);
+      // await this.mailService.sendRegistrationEmail(user, event);
 
       return { message: 'Registration successful' };
     });
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async removePastEvents(): Promise<void> {
+    const pastEvents = await this.prisma.event.findMany({
+      where: {
+        dateEnd: {
+          lt: new Date(new Date().setDate(new Date().getDate() - 1)),
+        },
+      },
+    });
+
+    for (const event of pastEvents) {
+      if (
+        new Date(event.dateEnd).getTime() <
+        new Date().getTime() - 30 * 24 * 60 * 60 * 1000
+      ) {
+        await this.prisma.checkIn.deleteMany({
+          where: { eventId: event.id },
+        });
+
+        await this.prisma.event.delete({
+          where: { id: event.id },
+        });
+      }
+    }
   }
 }

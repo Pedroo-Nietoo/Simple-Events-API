@@ -58,9 +58,12 @@ export class QrCodeController {
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Get(':eventId/attendee/:userId/badge')
-  getBadge(@Param('eventId') eventId: string, @Param('userId') userId: string) {
-    return this.qrCodeService.getBadge(eventId, userId);
+  @Get(':eventSlug/attendee/:userId/badge')
+  getBadge(
+    @Param('eventSlug') eventSlug: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.qrCodeService.getBadge(eventSlug, userId);
   }
 
   /**

@@ -68,12 +68,4 @@ export class Event implements Prisma.EventCreateInput {
   @IsDate()
   @IsNotEmpty()
   dateEnd: Date;
-
-  /**
-   * The start time of the event.
-   * @example '15:30:00'
-   */
-  @IsDate()
-  @IsNotEmpty()
-  startTime: Date;
 }

@@ -143,9 +143,9 @@ export class EventsController {
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventsService.findOne(id);
+  @Get(':slug')
+  findOne(@Param('slug') slug: string) {
+    return this.eventsService.findOne(slug);
   }
 
   /**
@@ -186,9 +186,9 @@ export class EventsController {
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventsService.update(id, updateEventDto);
+  @Patch(':slug')
+  update(@Param('slug') slug: string, @Body() updateEventDto: UpdateEventDto) {
+    return this.eventsService.update(slug, updateEventDto);
   }
 
   /**
@@ -226,9 +226,9 @@ export class EventsController {
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.eventsService.remove(id);
+  @Delete(':slug')
+  remove(@Param('slug') slug: string) {
+    return this.eventsService.remove(slug);
   }
 
   /**
@@ -273,11 +273,11 @@ export class EventsController {
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Post(':eventId/attendee/:userId/register')
+  @Post(':eventSlug/attendee/:userId/register')
   registerUserInEvent(
-    @Param('eventId') eventId: string,
+    @Param('eventSlug') eventSlug: string,
     @Param('userId') userId: string,
   ) {
-    return this.eventsService.registerUserInEvent(eventId, userId);
+    return this.eventsService.registerUserInEvent(eventSlug, userId);
   }
 }

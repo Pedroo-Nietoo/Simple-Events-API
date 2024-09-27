@@ -52,8 +52,36 @@ export class QrCodeService {
     const currentTime = new Date();
     currentTime.setHours(currentTime.getHours() - 3);
 
-    const eventStartTime = new Date(event.startTime);
+    const todayDate = new Date(
+      currentTime.getFullYear(),
+      currentTime.getMonth(),
+      currentTime.getDate(),
+    );
 
+    const eventStartDate = new Date(
+      event.dateStart.getFullYear(),
+      event.dateStart.getMonth(),
+      event.dateStart.getUTCDate(),
+    );
+
+    const eventEndDate = new Date(
+      event.dateEnd.getFullYear(),
+      event.dateEnd.getMonth(),
+      event.dateEnd.getUTCDate(),
+    );
+
+    if (todayDate > eventStartDate && todayDate <= eventEndDate) {
+      const url = `${process.env.ENVIRONMENT_URL}/events/${eventId}/attendee/${userId}/check-in`;
+      try {
+        const qrCodeDataURL = await QRCode.toDataURL(url);
+        return qrCodeDataURL;
+      } catch (err) {
+        console.error('Error generating QR Code', err);
+        throw new Error('Error generating QR Code');
+      }
+    }
+
+    const eventStartTime = new Date(event.dateStart);
     const timeDifference = eventStartTime.getTime() - currentTime.getTime();
     const oneHourInMilliseconds = 60 * 60 * 1000;
 
@@ -66,7 +94,7 @@ export class QrCodeService {
       );
     }
 
-    const url = `http://localhost:3000/events/${eventId}/attendee/${userId}/check-in`;
+    const url = `${process.env.ENVIRONMENT_URL}/events/${eventId}/attendee/${userId}/check-in`;
     try {
       const qrCodeDataURL = await QRCode.toDataURL(url);
       return qrCodeDataURL;
