@@ -21,19 +21,19 @@ export function setupSwagger(app) {
     .addServer('http://localhost:3000', 'Dev server')
     .addServer('https://simple-events.api.com', 'Prod server')
 
-    .addTag('Users', 'All about users', {
+    .addTag('Users', 'All about the users module', {
       description: 'More info',
       url: 'https://simple-events-docs.apidocumentation.com/reference#tag/users',
     })
-    .addTag('Events', 'All about events', {
+    .addTag('Events', 'All about the events module', {
       description: 'More info',
       url: 'https://simple-events-docs.apidocumentation.com/reference#tag/events',
     })
-    .addTag('Auth', 'All about authentication and authorization', {
+    .addTag('Auth', 'All about the authentication/authorization module', {
       description: 'More info',
       url: 'https://simple-events-docs.apidocumentation.com/reference#tag/auth',
     })
-    .addTag('Health', 'All about service health check', {
+    .addTag('Health', 'All about the health module', {
       description: 'More info',
       url: 'https://simple-events-docs.apidocumentation.com/reference#tag/health',
     })
