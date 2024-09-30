@@ -11,6 +11,8 @@ import {
 /**
  * Data Transfer Object for creating a user.
  * Implements the Prisma.UserCreateInput interface.
+ *
+ * @class
  */
 export class User implements Prisma.UserCreateInput {
   /**

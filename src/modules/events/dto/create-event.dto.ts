@@ -11,6 +11,8 @@ import {
 /**
  * Data Transfer Object for creating an event.
  * Implements the structure for event creation input.
+ *
+ * @class
  */
 export class CreateEventDto {
   /**

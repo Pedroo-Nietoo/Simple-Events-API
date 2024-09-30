@@ -10,8 +10,21 @@ import {
 } from '@nestjs/terminus';
 import { PrismaService } from '../prisma/prisma.service';
 
+/**
+ * Serviço responsável por verificar a saúde do servidor.
+ *
+ * @class
+ */
 @Injectable()
 export class HealthService {
+  /**
+   * Construtor do serviço de saúde.
+   * @param db Indicador de saúde do TypeORM.
+   * @param prisma Indicador de saúde do Prisma.
+   * @param prismaService Serviço do Prisma.
+   * @param disk Indicador de saúde do disco.
+   * @param memory Indicador de saúde da memória.
+   */
   constructor(
     private health: HealthCheckService,
     private http: HttpHealthIndicator,
@@ -21,13 +34,27 @@ export class HealthService {
     private readonly disk: DiskHealthIndicator,
     private readonly memory: MemoryHealthIndicator,
   ) {}
+
+  /**
+   * Logger instance for monitoring server health.
+   *
+   * This logger is used to log messages related to the health of the server.
+   * It helps in tracking the server's status and identifying any potential issues.
+   *
+   * @private
+   * @readonly
+   */
   private readonly logger = new Logger('Server Health');
 
+  /**
+   * Verifica a saúde do servidor.
+   * @returns Um objeto contendo o resultado da verificação de saúde.
+   */
   async checkHealth() {
     try {
       const serverHealth: HealthCheckResult = await this.health.check([
         () =>
-          this.http.pingCheck('nestjs-api', 'http://localhost:3000/api-docs'),
+          this.http.pingCheck('nestjs-api', `${process.env.ENVIRONMENT_URL}`),
         () => this.prisma.pingCheck('prisma', this.prismaService),
         // () => this.db.pingCheck('database'),
         // () =>

@@ -2,10 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { User, Event } from '@prisma/client';
 import * as sgMail from '@sendgrid/mail';
 
+/**
+ * Serviço responsável por enviar emails utilizando o SendGrid.
+ *
+ * @class
+ */
 @Injectable()
 export class MailService {
-  constructor() {}
-
+  /**
+   * Sends a registration confirmation email to the user for a specific event.
+   *
+   * @param {User} user - The user who registered for the event.
+   * @param {Event} event - The event for which the user registered.
+   * @throws {Error} Throws an error if the email fails to send.
+   */
   async sendRegistrationEmail(user: User, event: Event) {
     try {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -30,8 +40,8 @@ export class MailService {
 
       const msg = {
         to: user?.email,
-        from: 'pedronieto.2005@gmail.com',
-        templateId: 'd-d09f68831f8c4c688a5a3dbb19e7fca0',
+        from: process.env.SENDGRID_SENDER_EMAIL,
+        templateId: process.env.SENDGRID_TEMPLATE_ID,
         dynamic_template_data: {
           title: event?.title,
           details: event?.details,

@@ -10,6 +10,8 @@ import { PrismaService } from '@prisma/prisma.service';
 
 /**
  * Service class for managing QR codes related to event check-ins.
+ *
+ * @class
  */
 @Injectable()
 export class QrCodeService {

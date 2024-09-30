@@ -22,6 +22,8 @@ import { JwtAuthGuard } from './jwt/jwt-auth.guard';
 
 /**
  * Controller for handling authentication operations.
+ *
+ * @class
  */
 @ApiTags('Auth')
 @Controller('auth')
@@ -38,7 +40,7 @@ export class AuthController {
     summary: 'Logs in a user',
     description: 'Logs in a user on the API',
   })
-  @ApiOkResponse({ status: 200, description: 'User logged in successfully' })
+  @ApiOkResponse({ status: 201, description: 'User logged in successfully' })
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
@@ -80,14 +82,14 @@ export class AuthController {
     summary: 'Returns the user profile',
     description: 'Returns the current user profile',
   })
-  @ApiOkResponse({ status: 200, description: 'Profile returned successfully' })
+  @ApiOkResponse({ status: 201, description: 'Profile returned successfully' })
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
   })
   @ApiUnauthorizedResponse({
     status: 401,
-    description: 'Invalid credentials',
+    description: 'User not logged in',
   })
   @ApiInternalServerErrorResponse({
     status: 500,
@@ -107,11 +109,11 @@ export class AuthController {
    */
   @ApiOperation({
     summary: 'Generates a new access token',
-    description: 'Generates a new access token using a refresh token',
+    description: 'Generates a new access token using the refresh token',
   })
   @ApiOkResponse({
-    status: 200,
-    description: 'Access token generated successfully',
+    status: 201,
+    description: 'Access token refreshed successfully',
   })
   @ApiBadRequestResponse({
     status: 400,

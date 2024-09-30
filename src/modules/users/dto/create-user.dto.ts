@@ -9,6 +9,8 @@ import {
 
 /**
  * Data Transfer Object for creating a new user.
+ *
+ * @class
  */
 export class CreateUserDto {
   /**

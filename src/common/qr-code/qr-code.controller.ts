@@ -17,6 +17,8 @@ import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
 
 /**
  * Controller for handling QR-Code-related operations.
+ *
+ * @class
  */
 @ApiTags('Events')
 @Controller('events')
@@ -97,7 +99,8 @@ export class QrCodeController {
   })
   @ApiNotFoundResponse({
     status: 404,
-    description: 'User is not registered in this event',
+    description:
+      'User is not registered in this event / Event creator not found / Event not found',
   })
   @ApiConflictResponse({
     status: 409,

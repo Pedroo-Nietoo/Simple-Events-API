@@ -5,6 +5,8 @@ import * as bcrypt from 'bcrypt';
 
 /**
  * Service for authentication operations.
+ *
+ * @class
  */
 @Injectable()
 export class AuthService {

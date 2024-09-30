@@ -14,6 +14,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 
 /**
  * Service class for managing events.
+ *
+ * @class
  */
 @Injectable()
 export class EventsService {
@@ -51,7 +53,7 @@ export class EventsService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Event creator not found');
     }
 
     return await this.prisma.event.create({
@@ -290,12 +292,23 @@ export class EventsService {
         },
       });
 
-      // await this.mailService.sendRegistrationEmail(user, event);
+      await this.mailService.sendRegistrationEmail(user, event);
 
       return { message: 'Registration successful' };
     });
   }
 
+  /**
+   * Removes past events from the database.
+   *
+   * This method performs the following steps:
+   * 1. Finds all events that have ended before yesterday.
+   * 2. For each of these past events, checks if the event ended more than 30 days ago.
+   * 3. If the event ended more than 30 days ago, deletes all associated check-ins.
+   * 4. Deletes the event itself from the database.
+   *
+   * @returns {Promise<void>} A promise that resolves when the operation is complete.
+   */
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async removePastEvents(): Promise<void> {
     const pastEvents = await this.prisma.event.findMany({

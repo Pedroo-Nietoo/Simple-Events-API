@@ -29,6 +29,8 @@ import { CreateEventDto } from './dto/create-event.dto';
 
 /**
  * Controller for handling event-related operations.
+ *
+ * @class
  */
 @ApiTags('Events')
 @Controller('events')
@@ -60,6 +62,10 @@ export class EventsController {
     status: 401,
     description: 'User not logged in',
   })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Event creator not found',
+  })
   @ApiConflictResponse({
     status: 409,
     description: 'Title already registered',
@@ -88,10 +94,6 @@ export class EventsController {
     description: 'Retrieves a list of all events from the API.',
   })
   @ApiOkResponse({ status: 200, description: 'Events listed successfully' })
-  @ApiBadRequestResponse({
-    status: 400,
-    description: 'Bad request',
-  })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
@@ -170,7 +172,7 @@ export class EventsController {
   })
   @ApiUnauthorizedResponse({
     status: 401,
-    description: 'User not logged in',
+    description: 'User not logged in / User not authorized',
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -218,7 +220,7 @@ export class EventsController {
   })
   @ApiNotFoundResponse({
     status: 404,
-    description: 'Event not found',
+    description: 'Event not found / User not found',
   })
   @ApiInternalServerErrorResponse({
     status: 500,

@@ -11,6 +11,8 @@ import { User } from './entities/user.entity';
 
 /**
  * Service dealing with user-related operations.
+ *
+ * @class
  */
 @Injectable()
 export class UsersService {

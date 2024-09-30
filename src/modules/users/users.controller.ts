@@ -28,6 +28,8 @@ import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 
 /**
  * Controller for handling user-related operations.
+ *
+ * @class
  */
 @ApiTags('Users')
 @Controller('users')
@@ -47,10 +49,6 @@ export class UsersController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
-  })
-  @ApiUnauthorizedResponse({
-    status: 401,
-    description: 'User not logged in',
   })
   @ApiConflictResponse({
     status: 409,
@@ -74,10 +72,6 @@ export class UsersController {
     description: 'Lists all users on the API',
   })
   @ApiOkResponse({ status: 200, description: 'Users listed successfully' })
-  @ApiBadRequestResponse({
-    status: 400,
-    description: 'Bad request',
-  })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',

@@ -10,6 +10,8 @@ import {
 /**
  * Represents an event entity with various properties.
  * Implements the Prisma.EventCreateInput interface.
+ *
+ * @class
  */
 export class Event {
   /**

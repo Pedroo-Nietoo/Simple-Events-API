@@ -13,6 +13,8 @@ import {
 /**
  * Data Transfer Object for updating an event.
  * Extends the CreateEventDto to allow partial updates.
+ *
+ * @class
  */
 export class UpdateEventDto extends PartialType(CreateEventDto) {
   /**

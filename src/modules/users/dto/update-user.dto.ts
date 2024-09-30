@@ -11,6 +11,8 @@ import { ApiProperty } from '@nestjs/swagger';
 /**
  * Data Transfer Object for updating a user.
  * Extends the CreateUserDto to allow partial updates.
+ *
+ * @class
  */
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   /**

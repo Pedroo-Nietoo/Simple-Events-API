@@ -5,6 +5,8 @@ import { ConfigService } from '@nestjs/config';
 
 /**
  * JwtStrategy class extends the PassportStrategy for JWT authentication.
+ *
+ * @class
  */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

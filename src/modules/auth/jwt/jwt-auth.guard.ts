@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
  * This guard extends the `AuthGuard` class provided by `@nestjs/passport`
  * and uses the 'jwt' strategy to protect routes.
  *
+ * @class
  * @see AuthGuard
  * @see JwtStrategy
  */

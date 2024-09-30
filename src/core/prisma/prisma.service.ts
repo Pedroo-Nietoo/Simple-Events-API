@@ -4,6 +4,8 @@ import { PrismaClient } from '@prisma/client';
 /**
  * Service that extends the PrismaClient and implements the OnModuleInit and OnModuleDestroy interfaces.
  * This service handles the initialization and destruction lifecycle hooks to manage the database connection.
+ *
+ * @class
  */
 @Injectable()
 export class PrismaService
