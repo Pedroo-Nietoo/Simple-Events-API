@@ -23,19 +23,23 @@ export function setupSwagger(app) {
 
     .addTag('Users', 'All about users', {
       description: 'More info',
-      url: 'https://github.com/Pedroo-Nietoo',
+      url: 'https://simple-events-docs.apidocumentation.com/reference#tag/users',
     })
     .addTag('Events', 'All about events', {
       description: 'More info',
-      url: 'https://github.com/Pedroo-Nietoo',
+      url: 'https://simple-events-docs.apidocumentation.com/reference#tag/events',
     })
     .addTag('Auth', 'All about authentication and authorization', {
       description: 'More info',
-      url: 'https://github.com/Pedroo-Nietoo',
+      url: 'https://simple-events-docs.apidocumentation.com/reference#tag/auth',
     })
     .addTag('Health', 'All about service health check', {
       description: 'More info',
-      url: 'https://github.com/Pedroo-Nietoo',
+      url: 'https://simple-events-docs.apidocumentation.com/reference#tag/health',
+    })
+    .addTag('General', 'The base API endpoint', {
+      description: 'More info',
+      url: 'https://simple-events-docs.apidocumentation.com/reference#tag/general',
     })
     .build();
 
