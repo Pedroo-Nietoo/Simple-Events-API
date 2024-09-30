@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -44,7 +44,7 @@ export class AuthService {
   /**
    * Logs in a user and generates a JWT token.
    * @param user - The user object to be included in the JWT payload.
-   * @returns The generated JWT token.
+   * @returns The generated JWT tokens.
    */
   async login(user: any) {
     const payload = {
@@ -54,6 +54,51 @@ export class AuthService {
       email: user.email,
       birthDate: user.birthDate,
     };
-    return this.jwtService.sign(payload);
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: '1m',
+    });
+
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  /**
+   * Refreshes the access token using the provided refresh token.
+   *
+   * @param {string} refreshToken - The refresh token to decode and use for generating a new access token.
+   * @returns {Promise<{ accessToken: string, refreshToken: string }>} An object containing the new access token and the provided refresh token.
+   * @throws {UnauthorizedException} If the refresh token is invalid.
+   */
+  async refreshToken(refreshToken: string) {
+    try {
+      const payload = this.jwtService.decode(refreshToken);
+
+      const newAccessToken = this.jwtService.sign(
+        {
+          id: payload.id,
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+          email: payload.email,
+          birthDate: payload.birthDate,
+        },
+        {
+          expiresIn: '1h',
+        },
+      );
+
+      return {
+        accessToken: newAccessToken,
+        refreshToken,
+      };
+    } catch (e) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 }

@@ -5,6 +5,7 @@ import {
   UseGuards,
   Request,
   UnauthorizedException,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -93,5 +94,36 @@ export class AuthController {
   @Post('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  /**
+   * Generates a new access token using a refresh token.
+   * @param body - The refresh token.
+   * @returns The new access token.
+   * @throws UnauthorizedException if the refresh token is invalid.
+   */
+  @ApiOperation({
+    summary: 'Generates a new access token',
+    description: 'Generates a new access token using a refresh token',
+  })
+  @ApiOkResponse({
+    status: 200,
+    description: 'Access token generated successfully',
+  })
+  @ApiBadRequestResponse({
+    status: 400,
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'Invalid refresh token',
+  })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  @Post('refresh-token/:token')
+  async refreshToken(@Param('token') token: string) {
+    return this.authService.refreshToken(token);
   }
 }

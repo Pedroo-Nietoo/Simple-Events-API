@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -32,9 +32,8 @@ model Event {
   slug             String    @unique
   maximumAttendees Int?      @map("maximum_attendees")
   ageRestricted    Boolean?  @default(false) @map("age_restricted")
-  dateStart        DateTime  @map("date_start") @db.Date
-  startTime        DateTime  @map("time_start") @db.Time
-  dateEnd          DateTime  @map("date_end") @db.Date
+  dateStart        DateTime  @map("date_start")
+  dateEnd          DateTime  @map("date_end")
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   checkIns         CheckIn[]

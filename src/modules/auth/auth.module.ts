@@ -20,7 +20,6 @@ import { UsersService } from '../users/users.service';
         const secret = configService.get<string>('JWT_SECRET');
         return {
           secret,
-          signOptions: { expiresIn: '60m' },
         };
       },
     }),
