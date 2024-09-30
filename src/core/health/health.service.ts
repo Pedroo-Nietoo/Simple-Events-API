@@ -9,6 +9,7 @@ import {
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 import { PrismaService } from '../prisma/prisma.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 /**
  * Serviço responsável por verificar a saúde do servidor.
@@ -50,18 +51,18 @@ export class HealthService {
    * Verifica a saúde do servidor.
    * @returns Um objeto contendo o resultado da verificação de saúde.
    */
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async checkHealth() {
     try {
       const serverHealth: HealthCheckResult = await this.health.check([
         () =>
           this.http.pingCheck('nestjs-api', `${process.env.ENVIRONMENT_URL}`),
         () => this.prisma.pingCheck('prisma', this.prismaService),
-        // () => this.db.pingCheck('database'),
-        // () =>
-        //   this.disk.checkStorage('storage', {
-        //     path: `C:/Program Files/PostgreSQL/data`,
-        //     thresholdPercent: 1.0,
-        //   }),
+        () =>
+          this.disk.checkStorage('storage', {
+            path: `/var/lib/postgresql/data`,
+            thresholdPercent: 7.0,
+          }),
         () => this.memory.checkHeap('memory_heap', 1024 * 1024 * 1024),
       ]);
 
