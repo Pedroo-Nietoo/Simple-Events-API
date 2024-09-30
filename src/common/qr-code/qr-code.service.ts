@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import * as QRCode from 'qrcode';
 import { PrismaService } from '@prisma/prisma.service';
@@ -27,9 +28,9 @@ export class QrCodeService {
    * @throws NotFoundException if the event or the user's check-in is not found.
    * @throws Error if there is an issue generating the QR code.
    */
-  async getBadge(eventId: string, userId: string): Promise<string> {
+  async getBadge(eventSlug: string, userId: string): Promise<string> {
     const event = await this.prisma.event.findUnique({
-      where: { id: eventId },
+      where: { slug: eventSlug },
     });
 
     if (!event) {
@@ -39,7 +40,7 @@ export class QrCodeService {
     const existingCheckIn = await this.prisma.checkIn.findUnique({
       where: {
         eventId_userId: {
-          eventId: eventId,
+          eventId: event.id,
           userId: userId,
         },
       },
@@ -71,7 +72,7 @@ export class QrCodeService {
     );
 
     if (todayDate > eventStartDate && todayDate <= eventEndDate) {
-      const url = `${process.env.ENVIRONMENT_URL}/events/${eventId}/attendee/${userId}/check-in`;
+      const url = `${process.env.ENVIRONMENT_URL}/events/${event.id}/attendee/${userId}/check-in`;
       try {
         const qrCodeDataURL = await QRCode.toDataURL(url);
         return qrCodeDataURL;
@@ -94,7 +95,7 @@ export class QrCodeService {
       );
     }
 
-    const url = `${process.env.ENVIRONMENT_URL}/events/${eventId}/attendee/${userId}/check-in`;
+    const url = `${process.env.ENVIRONMENT_URL}/events/${event.id}/attendee/${userId}/check-in`;
     try {
       const qrCodeDataURL = await QRCode.toDataURL(url);
       return qrCodeDataURL;
@@ -112,7 +113,11 @@ export class QrCodeService {
    * @throws NotFoundException if the user is not registered in the event.
    * @throws ConflictException if the user has already checked in.
    */
-  async checkIn(eventId: string, userId: string): Promise<{ message: string }> {
+  async checkIn(
+    eventId: string,
+    userId: string,
+    eventCreatorId: string,
+  ): Promise<{ message: string }> {
     const existingRegistration = await this.prisma.checkIn.findUnique({
       where: {
         eventId_userId: {
@@ -121,6 +126,16 @@ export class QrCodeService {
         },
       },
     });
+
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+    });
+
+    if (event.eventCreatorId !== eventCreatorId) {
+      throw new UnauthorizedException(
+        'User not authorized to check in other users for this event',
+      );
+    }
 
     if (!existingRegistration) {
       throw new NotFoundException('User is not registered in this event');

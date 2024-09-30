@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -45,10 +46,19 @@ export class EventsService {
       );
     }
 
+    const user = await this.prisma.user.findUnique({
+      where: { id: createEventDto.eventCreatorId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     return await this.prisma.event.create({
       data: {
         ...createEventDto,
         slug,
+        eventCreatorId: createEventDto.eventCreatorId,
         dateStart: new Date(createEventDto.dateStart),
         dateEnd: new Date(createEventDto.dateEnd),
       },
@@ -63,6 +73,12 @@ export class EventsService {
   async findAll(): Promise<Event[]> {
     const events = await this.prisma.event.findMany({
       include: {
+        eventCreator: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
         checkIns: {
           select: {
             user: {
@@ -96,6 +112,12 @@ export class EventsService {
     const event = await this.prisma.event.findUnique({
       where: { slug },
       include: {
+        eventCreator: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
         checkIns: {
           select: {
             user: {
@@ -134,6 +156,10 @@ export class EventsService {
 
     if (!event) {
       throw new NotFoundException('Event not found');
+    }
+
+    if (event.eventCreatorId !== updateEventDto.eventCreatorId) {
+      throw new UnauthorizedException('User is not authorized to update event');
     }
 
     const eventSlug = generateSlug(updateEventDto.title);
@@ -186,6 +212,7 @@ export class EventsService {
    * Registers a user for an event.
    * @param eventId - The ID of the event to register for.
    * @param userId - The ID of the user to register.
+   * @param eventCreatorId - The ID of the user who created the event.
    * @returns A message indicating the result of the registration.
    * @throws NotFoundException if the event or user is not found.
    * @throws ConflictException if the event is full or the user is already registered.
@@ -214,12 +241,13 @@ export class EventsService {
       const today = new Date();
       const todayDate = new Date(
         today.getFullYear(),
-        today.getMonth(),
+        today.getUTCMonth(),
         today.getDate(),
       );
+
       const eventEndDate = new Date(
         event.dateEnd.getFullYear(),
-        event.dateEnd.getMonth(),
+        event.dateEnd.getUTCMonth(),
         event.dateEnd.getUTCDate(),
       );
 

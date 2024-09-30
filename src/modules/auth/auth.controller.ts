@@ -54,7 +54,10 @@ export class AuthController {
   @Post('login')
   @ApiBody({
     schema: {
-      properties: { email: { type: 'string' }, password: { type: 'string' } },
+      properties: {
+        email: { type: 'string', example: 'johndoe@example.com' },
+        password: { type: 'string', example: 'Password123!' },
+      },
     },
   })
   async login(@Body() body: { email: string; password: string }) {

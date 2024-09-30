@@ -21,6 +21,7 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   checkIns  CheckIn[]
+  Event     Event[]
 
   @@map("users")
 }
@@ -32,11 +33,13 @@ model Event {
   slug             String    @unique
   maximumAttendees Int?      @map("maximum_attendees")
   ageRestricted    Boolean?  @default(false) @map("age_restricted")
-  dateStart        DateTime  @map("date_start") @db.Date
-  dateEnd          DateTime  @map("date_end") @db.Date
+  dateStart        DateTime  @map("date_start")
+  dateEnd          DateTime  @map("date_end")
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   checkIns         CheckIn[]
+  eventCreatorId   String
+  eventCreator     User      @relation(fields: [eventCreatorId], references: [id])
 
   @@map("events")
 }

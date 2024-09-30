@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import {
   IsString,
   IsNotEmpty,
@@ -12,7 +11,7 @@ import {
  * Represents an event entity with various properties.
  * Implements the Prisma.EventCreateInput interface.
  */
-export class Event implements Prisma.EventCreateInput {
+export class Event {
   /**
    * The title of the event.
    * @type {string}
@@ -68,4 +67,12 @@ export class Event implements Prisma.EventCreateInput {
   @IsDate()
   @IsNotEmpty()
   dateEnd: Date;
+
+  /**
+   * The ID of the user who created the event.
+   * @type {string}
+   */
+  @IsString()
+  @IsNotEmpty()
+  eventCreatorId: string;
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, UseGuards, Body } from '@nestjs/common';
 import {
   ApiOperation,
   ApiCreatedResponse,
@@ -10,6 +10,7 @@ import {
   ApiTags,
   ApiBearerAuth,
   ApiUnauthorizedResponse,
+  ApiBody,
 } from '@nestjs/swagger';
 import { QrCodeService } from './qr-code.service';
 import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
@@ -109,7 +110,23 @@ export class QrCodeController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post(':eventId/attendee/:userId/check-in')
-  checkIn(@Param('eventId') eventId: string, @Param('userId') userId: string) {
-    return this.qrCodeService.checkIn(eventId, userId);
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        eventCreatorId: {
+          type: 'string',
+          description: 'The ID of the event creator',
+        },
+      },
+      required: ['eventCreatorId'],
+    },
+  })
+  checkIn(
+    @Param('eventId') eventId: string,
+    @Param('userId') userId: string,
+    @Body('eventCreatorId') eventCreatorId: string,
+  ) {
+    return this.qrCodeService.checkIn(eventId, userId, eventCreatorId);
   }
 }

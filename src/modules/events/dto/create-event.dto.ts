@@ -112,4 +112,18 @@ export class CreateEventDto {
   @IsDate()
   @IsNotEmpty()
   dateEnd: Date;
+
+  /**
+   * The ID of the user who created the event.
+   * @type {string}
+   */
+  @ApiProperty({
+    description: 'The ID of the user who created the event',
+    type: 'string',
+    required: true,
+    example: '37eeb4d8-c202-4c5b-923c-97a19d0f77a1',
+  })
+  @IsString()
+  @IsNotEmpty()
+  eventCreatorId: string;
 }
