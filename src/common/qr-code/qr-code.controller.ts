@@ -14,6 +14,7 @@ import {
 } from '@nestjs/swagger';
 import { QrCodeService } from './qr-code.service';
 import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
+import { SwaggerErrorResponse } from '@/swagger/errors/error-response';
 
 /**
  * Controller for handling QR-Code-related operations.
@@ -46,18 +47,22 @@ export class QrCodeController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found / User not registered in this event',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -92,23 +97,28 @@ export class QrCodeController {
     status: 400,
     description:
       'Cannot generate QR Code. Only generation with 1 hour or less remaining will be allowed',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description:
       'User is not registered in this event / Event creator not found / Event not found',
+    type: SwaggerErrorResponse,
   })
   @ApiConflictResponse({
     status: 409,
     description: 'User already checked in for this event',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

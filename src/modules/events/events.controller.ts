@@ -26,6 +26,7 @@ import { JwtAuthGuard } from '@/modules/auth/jwt/jwt-auth.guard';
 import { EventsService } from './events.service';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateEventDto } from './dto/create-event.dto';
+import { SwaggerErrorResponse } from '@/swagger/errors/error-response';
 
 /**
  * Controller for handling event-related operations.
@@ -57,22 +58,27 @@ export class EventsController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event creator not found',
+    type: SwaggerErrorResponse,
   })
   @ApiConflictResponse({
     status: 409,
     description: 'Title already registered',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -97,14 +103,17 @@ export class EventsController {
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'No events found',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -130,18 +139,22 @@ export class EventsController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -169,22 +182,27 @@ export class EventsController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in / User not authorized',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found',
+    type: SwaggerErrorResponse,
   })
   @ApiConflictResponse({
     status: 409,
     description: 'Title already registered',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -213,18 +231,22 @@ export class EventsController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found / User not found',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -255,23 +277,28 @@ export class EventsController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Event not found',
+    type: SwaggerErrorResponse,
   })
   @ApiConflictResponse({
     status: 409,
     description:
       'User already registered for this event / Event is full / Cannot register: Age restriction',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

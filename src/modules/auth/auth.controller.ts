@@ -19,6 +19,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from './jwt/jwt-auth.guard';
+import { SwaggerErrorResponse } from '@/swagger/errors/error-response';
 
 /**
  * Controller for handling authentication operations.
@@ -44,14 +45,17 @@ export class AuthController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'Invalid credentials',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @Post('login')
   @ApiBody({
@@ -68,6 +72,7 @@ export class AuthController {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
     return this.authService.login(user);
   }
 
@@ -86,14 +91,17 @@ export class AuthController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @UseGuards(JwtAuthGuard)
   @Post('profile')
@@ -118,14 +126,17 @@ export class AuthController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'Invalid refresh token',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @Post('refresh-token/:token')
   async refreshToken(@Param('token') token: string) {

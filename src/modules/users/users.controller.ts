@@ -25,6 +25,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
+import { SwaggerErrorResponse } from '@/swagger/errors/error-response';
 
 /**
  * Controller for handling user-related operations.
@@ -49,14 +50,17 @@ export class UsersController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiConflictResponse({
     status: 409,
     description: 'E-mail already registered',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -79,10 +83,12 @@ export class UsersController {
   @ApiNotFoundResponse({
     status: 404,
     description: 'No users found',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -104,18 +110,22 @@ export class UsersController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'User not found',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -138,22 +148,27 @@ export class UsersController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'User not found',
+    type: SwaggerErrorResponse,
   })
   @ApiConflictResponse({
     status: 409,
     description: 'E-mail already registered',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -178,18 +193,22 @@ export class UsersController {
   @ApiBadRequestResponse({
     status: 400,
     description: 'Bad request',
+    type: SwaggerErrorResponse,
   })
   @ApiUnauthorizedResponse({
     status: 401,
     description: 'User not logged in',
+    type: SwaggerErrorResponse,
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'User not found',
+    type: SwaggerErrorResponse,
   })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal server error',
+    type: SwaggerErrorResponse,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
