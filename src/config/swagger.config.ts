@@ -7,9 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 export function setupSwagger(app) {
   const config = new DocumentBuilder()
     .setTitle('Simple Events API')
-    .setDescription(
-      'API para aplicação de gestão de participantes em eventos presenciais.',
-    )
+    .setDescription('API for managing participants in in-person events.')
     .setVersion('BETA')
     .setContact(
       '@Pedroo-Nietoo',
