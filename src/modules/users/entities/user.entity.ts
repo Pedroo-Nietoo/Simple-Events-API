@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import {
   IsString,
@@ -63,4 +64,21 @@ export class User implements Prisma.UserCreateInput {
   @IsDate()
   @IsNotEmpty()
   birthDate: Date;
+
+  /**
+   * The profile image of the user.
+   *
+   * @remarks
+   * This property is optional and can be used to store the binary data of the user's profile image.
+   *
+   * @property {string} image - The profile image of the user.
+   */
+  @ApiProperty({
+    description: 'Profile image of the user',
+    type: 'string',
+    format: 'binary',
+    required: false,
+  })
+  @IsOptional()
+  image?: string;
 }

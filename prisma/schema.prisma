@@ -18,6 +18,7 @@ model User {
   email     String    @unique
   password  String
   birthDate DateTime  @map("birth_date")
+  image     String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   checkIns  CheckIn[]

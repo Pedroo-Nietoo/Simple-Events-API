@@ -3,6 +3,7 @@ import {
   IsDate,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
@@ -85,4 +86,21 @@ export class CreateUserDto {
   @IsDate()
   @IsNotEmpty()
   birthDate: Date;
+
+  /**
+   * The profile image of the user.
+   *
+   * @remarks
+   * This property is optional and can be used to store the binary data of the user's profile image.
+   *
+   * @property {string} image - The profile image of the user.
+   */
+  @ApiProperty({
+    description: 'Profile image of the user',
+    type: 'string',
+    format: 'binary',
+    required: false,
+  })
+  @IsOptional()
+  image?: string;
 }

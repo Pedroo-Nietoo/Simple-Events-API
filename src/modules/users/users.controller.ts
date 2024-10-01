@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,7 +16,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiConflictResponse,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNoContentResponse,
@@ -26,6 +30,8 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { SwaggerErrorResponse } from '@/swagger/errors/error-response';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Multer } from 'multer';
 
 /**
  * Controller for handling user-related operations.
@@ -40,6 +46,7 @@ export class UsersController {
   /**
    * Creates a user.
    * @param createUserDto - The data required to create a user.
+   * @param file - The image file to upload.
    * @returns The created user.
    */
   @ApiOperation({
@@ -62,9 +69,28 @@ export class UsersController {
     description: 'Internal server error',
     type: SwaggerErrorResponse,
   })
+  @ApiConsumes('multipart/form-data')
+  @ApiConsumes('application/json')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        firstName: { type: 'string' },
+        lastName: { type: 'string' },
+        email: { type: 'string', format: 'email' },
+        password: { type: 'string' },
+        birthDate: { type: 'string', format: 'date' },
+        image: { type: 'string', format: 'binary', nullable: true },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('image'))
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(
+    @Body() createUserDto: CreateUserDto,
+    @UploadedFile() file: Multer.File,
+  ) {
+    return this.usersService.create(createUserDto, file);
   }
 
   /**

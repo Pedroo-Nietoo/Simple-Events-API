@@ -1,3 +1,4 @@
+import { Multer } from 'multer';
 import {
   ConflictException,
   Injectable,
@@ -8,6 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '@prisma/prisma.service';
 import * as bcypt from 'bcrypt';
 import { User } from './entities/user.entity';
+import { S3Service } from '@/common/aws/s3/s3.service';
 
 /**
  * Service dealing with user-related operations.
@@ -21,15 +23,22 @@ export class UsersService {
    *
    * @param {PrismaService} prisma - The Prisma service used for database operations.
    */
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private s3Service: S3Service,
+  ) {}
 
   /**
    * Creates a new user.
    * @param createUserDto - Data Transfer Object containing user creation details.
+   * @param file - The image file to upload.
    * @returns The created user.
    * @throws ConflictException if the email is already registered.
    */
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(
+    createUserDto: CreateUserDto,
+    file?: Multer.File,
+  ): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: {
         email: createUserDto.email,
@@ -42,6 +51,22 @@ export class UsersService {
 
     const salt = await bcypt.genSaltSync();
     createUserDto.password = await bcypt.hashSync(createUserDto.password, salt);
+
+    if (file) {
+      const bucketName = process.env.AWS_BUCKET_NAME;
+      const key = `users/${Date.now()}-${createUserDto.firstName.toLowerCase()}-${createUserDto.lastName.toLowerCase()}-${file.originalname}`;
+      const contentType = file.mimetype;
+
+      const imageUrl = await this.s3Service.uploadImage(
+        bucketName,
+        key,
+        file.buffer,
+        contentType,
+      );
+      createUserDto.image = imageUrl;
+    } else {
+      createUserDto.image = null;
+    }
 
     return await this.prisma.user.create({
       data: {

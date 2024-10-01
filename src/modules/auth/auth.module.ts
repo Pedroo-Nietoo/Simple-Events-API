@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { PrismaService } from '@/core/prisma/prisma.service';
 import { UsersService } from '../users/users.service';
+import { S3Service } from '@/common/aws/s3/s3.service';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UsersService } from '../users/users.service';
     AuthService,
     JwtStrategy,
     UsersService,
+    S3Service,
     PrismaService,
     ConfigService,
   ],

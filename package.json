@@ -30,6 +30,8 @@
     "docs:generate": "npx compodoc -p tsconfig.json -n 'Simple Events documentation'"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.658.1",
+    "@aws-sdk/client-s3": "^3.658.1",
     "@nestjs/axios": "^3.0.3",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.3",
