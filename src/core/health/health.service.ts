@@ -10,6 +10,7 @@ import {
 } from '@nestjs/terminus';
 import { PrismaService } from '../prisma/prisma.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { CloudWatchService } from '@/common/aws/cloudwatch/cloudwatch.service';
 
 /**
  * Serviço responsável por verificar a saúde do servidor.
@@ -34,6 +35,7 @@ export class HealthService {
     private readonly prismaService: PrismaService,
     private readonly disk: DiskHealthIndicator,
     private readonly memory: MemoryHealthIndicator,
+    private readonly cloudWatchService: CloudWatchService,
   ) {}
 
   /**
@@ -55,8 +57,7 @@ export class HealthService {
   async checkHealth() {
     try {
       const serverHealth: HealthCheckResult = await this.health.check([
-        () =>
-          this.http.pingCheck('nestjs-api', `${process.env.ENVIRONMENT_URL}`),
+        () => this.http.pingCheck('nestjs-api', process.env.ENVIRONMENT_URL),
         () => this.prisma.pingCheck('prisma', this.prismaService),
         () =>
           this.disk.checkStorage('storage', {
@@ -77,6 +78,13 @@ export class HealthService {
         message: error.message,
         details: error.response.details,
       };
+
+      await this.cloudWatchService.logError(
+        process.env.CLOUDWATCH_LOG_GROUP,
+        process.env.CLOUDWATCH_LOG_STREAM,
+        errorLog,
+      );
+
       this.logger.error(`Error checking health: ${JSON.stringify(errorLog)}`);
       throw error;
     }
