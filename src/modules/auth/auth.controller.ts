@@ -5,7 +5,6 @@ import {
   UseGuards,
   Request,
   UnauthorizedException,
-  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -138,8 +137,15 @@ export class AuthController {
     description: 'Internal server error',
     type: SwaggerErrorResponse,
   })
-  @Post('refresh-token/:token')
-  async refreshToken(@Param('token') token: string) {
+  @ApiBody({
+    schema: {
+      properties: {
+        token: { type: 'string', example: 'your-refresh-token' },
+      },
+    },
+  })
+  @Post('refresh-token')
+  async refreshToken(@Body('token') token: string) {
     return this.authService.refreshToken(token);
   }
 }
